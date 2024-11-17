@@ -1,7 +1,6 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Link } from 'react-router-dom'
 import { useState } from 'react'
 import { ShoppingBagIcon, HeartIcon, UserIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
-import productA from '../assets/images/pexels-dom.jpg'
 // Mock product data
 const products = [
   {
