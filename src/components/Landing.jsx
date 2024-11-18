@@ -4,31 +4,21 @@ import { ShoppingBagIcon, HeartIcon, UserIcon, MagnifyingGlassIcon, XMarkIcon, T
 import UserMenu from './user-menu'
 import Checkout from './Checkout'
 import Confirmation from './Confirmation'
-
-// Mock product data
-const products = [
-  {
-    id: 1,
-    name: "Zapatillas Classic",
-    price: 129.99,
-    image: "https://images.pexels.com/photos/2529157/pexels-photo-2529157.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    category: "Originals"
-  },
-  {
-    id: 2,
-    name: "Zapatillas Sport",
-    price: 149.99,
-    image: "https://images.pexels.com/photos/1598505/pexels-photo-1598505.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    category: "Originals"
-  },
-]
+import axios from 'axios'
 
 export default function App() {
   const [cartItems, setCartItems] = useState([])
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const [products, setProducts] = useState([]);
 
-  // Load cart items from localStorage on mount
+  useEffect(() => {
+    axios.get('http://localhost:3000/products')
+      .then(res => {
+        setProducts(res.data.data) // El servidor devuelve los datos en un objeto con la estructura {success: true, data: [...]}
+      })
+  }, [])
+
   useEffect(() => {
     const savedCart = localStorage.getItem('cart')
     if (savedCart) {
@@ -36,7 +26,6 @@ export default function App() {
     }
   }, [])
 
-  // Save cart items to localStorage when updated
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cartItems))
   }, [cartItems])
