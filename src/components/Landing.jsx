@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link } from 'react-router-dom'
 import { ShoppingBagIcon, HeartIcon, UserIcon, MagnifyingGlassIcon, XMarkIcon, TrashIcon } from '@heroicons/react/24/outline'
 import UserMenu from './user-menu'
 import Checkout from './Checkout'
 import Confirmation from './Confirmation'
 import axios from 'axios'
-
+import { API_URL } from '../config';
 export default function App() {
   const [cartItems, setCartItems] = useState([])
   const [isCartOpen, setIsCartOpen] = useState(false)
@@ -13,9 +13,9 @@ export default function App() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/products')
+    axios.get(`${API_URL}/products`)
       .then(res => {
-        setProducts(res.data.data) // El servidor devuelve los datos en un objeto con la estructura {success: true, data: [...]}
+        setProducts(res.data.data)
       })
   }, [])
 
@@ -59,7 +59,6 @@ export default function App() {
   }
 
   return (
-    <Router>
       <div className="min-h-screen bg-white">
         {/* Header */}
         <header className="border-b">
@@ -153,7 +152,7 @@ export default function App() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                   {products.map((product) => (
-                    <div key={product.id} className="group relative">
+                    <div key={product._id} className="group relative">
                       <div className="aspect-w-1 aspect-h-1 rounded-lg overflow-hidden">
                         <img
                           src={product.image}
@@ -274,6 +273,5 @@ export default function App() {
           </div>
         )}
       </div>
-    </Router>
   )
 }
