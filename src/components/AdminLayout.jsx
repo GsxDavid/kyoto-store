@@ -1,14 +1,15 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { 
-  ChevronDownIcon, 
-  HomeIcon, 
-  ShoppingBagIcon, 
-  UsersIcon, 
-  CogIcon, 
+import {
+  ChevronDownIcon,
+  HomeIcon,
+  ShoppingBagIcon,
+  UsersIcon,
+  CogIcon,
   ChartBarIcon,
   Bars4Icon,
   XMarkIcon,
+  ArrowLeftEndOnRectangleIcon
 } from '@heroicons/react/24/outline'
 
 const menuItems = [
@@ -55,7 +56,7 @@ export default function AdminLayout({ children }) {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const toggleSubmenu = (title) => {
+  const toggleSubmenu = title => {
     setOpenMenus(prev => ({
       ...prev,
       [title]: !prev[title]
@@ -67,17 +68,18 @@ export default function AdminLayout({ children }) {
     navigate('/admin/login')
   }
 
-  const isActive = (path) => {
+  const isActive = path => {
     return location.pathname === path
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Mobile sidebar toggle */}
-      <div className="lg:hidden fixed top-0 left-0 w-full bg-white z-50 px-4 py-2 flex items-center justify-between border-b">
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Mobile header */}
+      <header className="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between border-b bg-white px-4 lg:hidden">
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+          className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-600"
+          aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}
         >
           {isSidebarOpen ? (
             <XMarkIcon className="h-6 w-6" />
@@ -85,53 +87,54 @@ export default function AdminLayout({ children }) {
             <Bars4Icon className="h-6 w-6" />
           )}
         </button>
-        <span className="font-semibold text-lg">Admin Panel</span>
-      </div>
+        <span className="text-lg font-semibold">Admin Panel</span>
+        <div className="w-10" aria-hidden="true" />
+      </header>
 
       {/* Sidebar */}
-      <div
-        className={`fixed inset-y-0 left-0 z-40 w-64 bg-white transform transition-transform duration-300 ease-in-out ${
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 w-64 transform overflow-y-auto bg-white transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0 lg:static lg:inset-auto lg:w-64 border-r`}
+        }`}
       >
-        <div className="h-full flex flex-col">
+        <div className="flex h-full flex-col">
           {/* Logo */}
-          <div className="h-16 flex items-center justify-center border-b">
+          <div className="flex h-16 items-center justify-center border-b px-4">
             <Link to="/admin" className="text-xl font-bold">
               Kyoto Admin
             </Link>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 overflow-y-auto py-4">
-            {menuItems.map((item) => (
+          <nav className="flex-1 space-y-1 px-2 py-4">
+            {menuItems.map(item => (
               <div key={item.title}>
                 {item.submenu ? (
-                  <div>
+                  <div className="space-y-1">
                     <button
                       onClick={() => toggleSubmenu(item.title)}
-                      className={`w-full flex items-center justify-between px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900`}
+                      className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900"
                     >
                       <div className="flex items-center">
                         {item.icon}
                         <span className="ml-3">{item.title}</span>
                       </div>
                       <ChevronDownIcon
-                        className={`ml-2 h-4 w-4 transform transition-transform duration-200 ${
+                        className={`h-4 w-4 transform transition-transform duration-200 ${
                           openMenus[item.title] ? 'rotate-180' : ''
                         }`}
                       />
                     </button>
                     {openMenus[item.title] && (
-                      <div className="bg-gray-50">
-                        {item.submenu.map((subItem) => (
+                      <div className="space-y-1 pl-10">
+                        {item.submenu.map(subItem => (
                           <Link
                             key={subItem.path}
                             to={subItem.path}
-                            className={`block pl-12 pr-4 py-2 text-sm font-medium ${
+                            className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                               isActive(subItem.path)
-                                ? 'text-black bg-gray-100'
-                                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                                ? 'bg-gray-100 text-gray-900'
+                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                             }`}
                           >
                             {subItem.title}
@@ -143,10 +146,10 @@ export default function AdminLayout({ children }) {
                 ) : (
                   <Link
                     to={item.path}
-                    className={`flex items-center px-4 py-2 text-sm font-medium ${
+                    className={`flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                       isActive(item.path)
-                        ? 'text-black bg-gray-100'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                        ? 'bg-gray-100 text-gray-900'
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                     }`}
                   >
                     {item.icon}
@@ -161,21 +164,21 @@ export default function AdminLayout({ children }) {
           <div className="border-t p-4">
             <button
               onClick={handleLogout}
-              className="w-full flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md"
+              className="flex w-full items-center rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900"
             >
-{/*               <LogoutIcon className="h-5 w-5" />
- */}              <span className="ml-3">Cerrar Sesión</span>
+              <ArrowLeftEndOnRectangleIcon className="h-5 w-5" />
+              <span className="ml-3">Cerrar Sesión</span>
             </button>
           </div>
         </div>
-      </div>
+      </aside>
 
       {/* Main content */}
-      <div className={`lg:pl-64 flex flex-col min-h-screen`}>
-        <main className="flex-1 py-6 px-4 sm:px-6 lg:px-8 mt-14 lg:mt-0">
+      <main className="flex-1">
+        <div className="min-h-screen px-4 py-6 pt-20 lg:px-8 lg:pt-6">
           {children}
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   )
 }
