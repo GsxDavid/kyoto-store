@@ -32,10 +32,10 @@ export default function App() {
 
   const addToCart = (product) => {
     setCartItems(prevItems => {
-      const existingItem = prevItems.find(item => item.id === product.id)
+      const existingItem = prevItems.find(item => item._id === product._id)
       if (existingItem) {
         return prevItems.map(item =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          item._id === product._id ? { ...item, quantity: item.quantity + 1 } : item
         )
       }
       return [...prevItems, { ...product, quantity: 1 }]
@@ -43,7 +43,7 @@ export default function App() {
   }
 
   const removeFromCart = (productId) => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== productId))
+    setCartItems(prevItems => prevItems.filter(item => item._id !== productId))
   }
 
   const updateQuantity = (productId, newQuantity) => {
@@ -52,7 +52,7 @@ export default function App() {
     } else {
       setCartItems(prevItems =>
         prevItems.map(item =>
-          item.id === productId ? { ...item, quantity: newQuantity } : item
+          item._id === productId ? { ...item, quantity: newQuantity } : item
         )
       )
     }
@@ -205,7 +205,7 @@ export default function App() {
 
                       <div className="mt-8">
                         {cartItems.map((item) => (
-                          <div key={item.id} className="flex py-6">
+                          <div key={item._id} className="flex py-6">
                             <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                               <img
                                 src={item.image}
@@ -228,7 +228,7 @@ export default function App() {
                                   <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="font-medium text-indigo-600 hover:text-indigo-500">+</button>
                                 </div>
                                 <button
-                                  onClick={() => removeFromCart(item.id)}
+                                  onClick={() => removeFromCart(item._id)}
                                   className="font-medium text-indigo-600 hover:text-indigo-500"
                                 >
                                   <TrashIcon className="h-5 w-5" />
